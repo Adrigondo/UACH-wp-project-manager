@@ -6,6 +6,15 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var developersRouter = require('./routes/developers');
+var projectsRouter = require('./routes/projects');
+var dashboardsRouter = require('./routes/dashboards');
+var releaseBacklogsRouter = require('./routes/release-backlogs');
+var sprintsRouter = require('./routes/sprints');
+var columnsRouter = require('./routes/columns');
+var userStoriesRouter = require('./routes/user-stories');
+var userSocialNetworksRouter = require('./routes/user-social-networks');
+var skillsRouter = require('./routes/skills');
 
 var app = express();
 
@@ -21,6 +30,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/developers', developersRouter);
+app.use('/projects', projectsRouter);
+app.use('/dashboards', dashboardsRouter);
+app.use('/release-backlogs', releaseBacklogsRouter);
+app.use('/sprints', sprintsRouter);
+app.use('/columns', columnsRouter);
+app.use('/user-stories', userStoriesRouter);
+app.use('/user-social-networks', userSocialNetworksRouter);
+app.use('/skills', skillsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
