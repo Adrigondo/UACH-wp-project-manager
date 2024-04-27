@@ -22,8 +22,10 @@ npm install
 https://hub.docker.com/repository/docker/gary3k/manejador-proyectos/general
 
 ## Authors
+```
 Adrian Alejandro Gonzalez Dominguez
 Jair Delval Aguirre
 Angel Eduardo Garibay Valenzuela
 Brayan Ricardo Carrete Martinez
 Jair Alejandro Gaytan Espindola
+```
