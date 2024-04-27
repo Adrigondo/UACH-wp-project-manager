@@ -14,16 +14,11 @@ The classes that we identify in the project are:
 - Sprint 
 - Column
 - User Story 
-- Role
 - User Social Network
-- Social Network
-- Address
-- Skill Rank
 - Skill
-- Priority 
 
 After identifying the classes involved in the project, we make the next class diagram:
-[Class diagram](./diagrams/class-diagram.html)
+[Class diagram](./diagrams/class-diagram.png)
 
 ### Sequence diagram
 The following Interaction Diagram explains the flow of the project according to the requirements. This diagram shows some of the interactions that will occur in the application like:
@@ -35,7 +30,7 @@ The following Interaction Diagram explains the flow of the project according to 
 - Move a user story in a sprint from a column to another one
 
 With these interactions identified, the following diagram was made:
-[Sequence diagram](./diagrams/sequence-diagram.html)
+[Sequence diagram](./diagrams/sequence-diagram.png)
 
 ###  Drive folder with both diagrams:
 https://drive.google.com/drive/folders/1qG5St1E4TvYXubA3IJIctspczrTvgGXa?usp=sharing
