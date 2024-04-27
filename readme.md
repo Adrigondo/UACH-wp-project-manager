@@ -3,14 +3,42 @@
 ## Description
 The following project is based on the implementation of a software project management using the Scrum methodology
 
-## Class diagram
-The following class diagram describes the relationships between the classes in the project
-https://app.diagrams.net/#G1_7W3vAimCZR8Xmil6-eipdciQIHWu0Rd
+## Diagrams
+### Class diagram
+The classes that we identify in the project are: 
+- Project
+- Developer
+- User
+- Dashboard
+- Release Backlog
+- Sprint 
+- Column
+- User Story 
+- Role
+- User Social Network
+- Social Network
+- Address
+- Skill Rank
+- Skill
+- Priority 
 
+After identifying the classes involved in the project, we make the next class diagram:
+[Class diagram](./diagrams/class-diagram.html)
 
-## Sequence diagram
-The following Interaction Diagram explains the flow of the project according to the requirements
-https://app.diagrams.net/#G10T6wlEnRqcvrOU5WsG9DED0gIq6q1AsQ
+### Sequence diagram
+The following Interaction Diagram explains the flow of the project according to the requirements. This diagram shows some of the interactions that will occur in the application like:
+- Create new project 
+- Visualice project 
+- Create new skill
+- Create new user 
+- Add new user story to Product Backlog Column
+- Move a user story in a sprint from a column to another one
+
+With these interactions identified, the following diagram was made:
+[Sequence diagram](./diagrams/sequence-diagram.html)
+
+###  Drive folder with both diagrams:
+https://drive.google.com/drive/folders/1qG5St1E4TvYXubA3IJIctspczrTvgGXa?usp=sharing
 
 ## Requeriments
 ```
