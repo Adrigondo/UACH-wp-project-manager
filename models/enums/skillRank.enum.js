@@ -3,3 +3,4 @@ const SkillRanksEnum = {
     'SENIOR': 'SENIOR',
     'MASTER': 'MASTER',
 }
+module.exports=SkillRanksEnum;

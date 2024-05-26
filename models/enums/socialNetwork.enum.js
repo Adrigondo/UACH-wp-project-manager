@@ -3,3 +3,4 @@ const SocialNetworksEnum = {
     'GITHUB': 'GITHUB',
     'STACK_OVERFLOW': 'STACK_OVERFLOW',
 }
+module.exports=SocialNetworksEnum;

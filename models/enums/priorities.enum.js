@@ -4,3 +4,4 @@ const PrioritiesEnum = {
     'COULD': 'COULD',
     'WOULD': 'WOULD',
 }
+module.exports=PrioritiesEnum;
