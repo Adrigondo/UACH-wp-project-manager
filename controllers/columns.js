@@ -3,9 +3,7 @@ const Column = require('../models/users/column');
 
 async function create(req, res, next) {
     const { userStories} = req.body;
-    const permissionsArray = JSON.parse(permissions).map((id) => {
-        return new mongoose.Types.ObjectId(id);
-    });
+
     //Lista de User Story
 
     const column = new Column({ userStories});
@@ -47,7 +45,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Column.find().populate('_permissions').then((obj) => {
+    Column.find().then((obj) => {
         res.status(200).json({
             msg: 'Column list',
             obj: obj,
@@ -76,7 +74,7 @@ async function index(req, res, next) {
         return;
     }
 
-    Column.findOne({ _id: id }).populate('_permissions').then((obj) => {
+    Column.findOne({ _id: id }).then((obj) => {
         res.status(200).json({
             msg: `Column ${id}`,
             obj: obj,
@@ -92,15 +90,12 @@ async function index(req, res, next) {
 
 async function replace(req, res, next) {
     const { id } = req.params;
-    const { userStories, permissions } = {
+    const { userStories } = {
         userStories: req.body.userStories || "",
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
-            return new mongoose.Types.ObjectId(id);
-        }) : [],
     }
+
     const column = new Object({
         _userStories: userStories,
-        _permissions: permissions
     });
 
     const currentUser = req.auth.data.user;
@@ -130,15 +125,12 @@ async function replace(req, res, next) {
 
 async function update(req, res, next) {
     const { id } = req.params;
-    const { userStories, permissions } = {
+    const { userStories } = {
         userStories: req.body.userStories || undefined,
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
-            return new mongoose.Types.ObjectId(id);
-        }) : undefined,
     }
+
     const column = new Object({
         _userStories: userStories,
-        _permissions: permissions
     });
 
     const currentUser = req.auth.data.user;

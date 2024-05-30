@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
-const Priority = require('../enums/priorities.enum');
+const Priority = require('./enums/priorities.enum');
 
 const schema = new mongoose.Schema({
     _title: String,
     _narrativeHow: String,
     _narrativeWant: String,
     _narrativeLike: String,
-    _priority: Priority,
+    _priority: {
+        type: String,
+        enum: Object.keys(Priority),
+        default: Priority.MUST,
+    },
     _size: Number,
     _criteriaContext: String,
     _criteriaWhen: String,

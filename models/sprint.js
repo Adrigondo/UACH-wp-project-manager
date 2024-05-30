@@ -2,11 +2,26 @@ const mongoose = require('mongoose');
 const Column = require('./column');
 
 const schema = mongoose.Schema({
-    _backlog: Column,
-    _doing: Column,
-    _done: Column,
-    _testing: Column,
-    _release: Column,
+    _backlog: [{
+        type: mongoose.ObjectId,
+        ref: Column.prototype.name,
+    }],
+    _doing: [{
+        type: mongoose.ObjectId,
+        ref: Column.prototype.name,
+    }],
+    _done: [{
+        type: mongoose.ObjectId,
+        ref: Column.prototype.name,
+    }],
+    _testing:[{
+        type: mongoose.ObjectId,
+        ref: Column.prototype.name,
+    }],
+    _release: [{
+        type: mongoose.ObjectId,
+        ref: Column.prototype.name,
+    }],
 });
 
 class Sprint {

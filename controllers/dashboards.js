@@ -1,13 +1,10 @@
 const express = require('express');
 const Dashboard = require('../models/users/dashboard');
 const mongoose = require('mongoose');
-const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
-    const { project, startDate, productBacklogColumn, releasesBacklog, permissions } = req.body;
-    const permissionsArray = JSON.parse(permissions).map((id) => {
-        return new mongoose.Types.ObjectId(id);
-    });
+    const { project, startDate, productBacklogColumn, releasesBacklog } = req.body;
+
     const dashboard = new Dashboard({ project, startDate, productBacklogColumn, releasesBacklog, permissions });
 
     const currentUser = req.auth.data.user;
@@ -46,7 +43,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Dashboard.find().populate('_permissions').then((obj) => {
+    Dashboard.find().then((obj) => {
         res.status(200).json({
             msg: 'Dashboard list',
             obj: obj,
@@ -73,7 +70,7 @@ async function index(req, res, next) {
         return;
     }
 
-    Dashboard.findOne({ _id: id }).populate('_permissions').then((obj) => {
+    Dashboard.findOne({ _id: id }).then((obj) => {
         res.status(200).json({
             msg: `Dashboard ${id}`,
             obj: obj,
@@ -88,20 +85,17 @@ async function index(req, res, next) {
 
 async function replace(req, res, next) {
     const { id } = req.params;
-    const { project, startDate, productBacklogColumn, releasesBacklog, permissions } = {
+    const { project, startDate, productBacklogColumn, releasesBacklog } = {
         project: req.body.project || "",
         startDate: req.body.startDate || "",
         productBacklogColumn: req.body.releasesBacklog || "",
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
-            return new mongoose.Types.ObjectId(id);
-        }) : [],
     }
+
     const dashboard = new Object({
         _project: project,
         _startDate: startDate,
         _productBacklogColumn: productBacklogColumn,
         _releasesBacklog: releasesBacklog,
-        _permissions: permissions
     });
 
     const currentUser = req.auth.data.user;
@@ -130,21 +124,18 @@ async function replace(req, res, next) {
 
 async function update(req, res, next) {
     const { id } = req.params;
-    const { project, startDate, productBacklogColumn, releasesBacklog, permissions } = {
+    const { project, startDate, productBacklogColumn, releasesBacklog } = {
         project: req.body.project || undefined,
         startDate: req.body.startDate || undefined,
         productBacklogColumn: req.body.productBacklogColumn || undefined,
         releasesBacklog: req.body.releasesBacklog || undefined,
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
-            return new mongoose.Types.ObjectId(id);
-        }) : undefined,
     }
+
     const dashboard = new Object({
         _project: project,
         _startDate: startDate,
         _productBacklogColumn: productBacklogColumn,
         _releasesBacklog: releasesBacklog,
-        _permissions: permissions
     });
 
     const currentUser = req.auth.data.user;

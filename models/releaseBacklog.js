@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const Sprint = require('./sprint');
 
 const schema = mongoose.Schema({
-    _sprints: Sprint,
+    _sprints: [{
+        type: mongoose.ObjectId,
+        ref: Sprint.prototype.name,
+    }],
     _version: String,
     _endDate: Date,
 });

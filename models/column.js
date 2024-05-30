@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const UserStory = require('./userStory');
 
 const schema = mongoose.Schema({
-    _userStories: UserStory,
+    _userStories: [{
+        type: mongoose.ObjectId,
+        ref: UserStory.prototype.name,
+    }],
 });
 
 class Column {

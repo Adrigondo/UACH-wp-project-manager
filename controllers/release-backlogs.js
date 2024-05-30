@@ -1,14 +1,11 @@
 const express = require('express');
 const ReleaseBacklog = require('../models/users/releaseBacklog');
 const mongoose = require('mongoose');
-const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
-    const { sprints, version, endDate, permissions } = req.body;
-    const permissionsArray = JSON.parse(permissions).map((id) => {
-        return new mongoose.Types.ObjectId(id);
-    });
-    const releaseBacklog = new ReleaseBacklog({ sprints, version, endDate, permissions: permissionsArray });
+    const { sprints, version, endDate } = req.body;
+
+    const releaseBacklog = new ReleaseBacklog({ sprints, version, endDate });
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
@@ -46,7 +43,7 @@ async function list(req, res, next) {
         return;
     }
 
-    ReleaseBacklog.find().populate('_permissions').then((obj) => {
+    ReleaseBacklog.find().then((obj) => {
         res.status(200).json({
             msg: 'Release backlog list',
             obj: obj,
@@ -73,7 +70,7 @@ async function index(req, res, next) {
         return;
     }
 
-    ReleaseBacklog.findOne({ _id: id }).populate('_permissions').then((obj) => {
+    ReleaseBacklog.findOne({ _id: id }).then((obj) => {
         res.status(200).json({
             msg: `Release backlog ${id}`,
             obj: obj,
@@ -88,19 +85,16 @@ async function index(req, res, next) {
 
 async function replace(req, res, next) {
     const { id } = req.params;
-    const { sprints, version, endDate, permissions } = {
+    const { sprints, version, endDate } = {
         sprints: req.body.sprints || "",
         version: req.body.version || "",
         endDate: req.body.endDate || "",
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
-            return new mongoose.Types.ObjectId(id);
-        }) : [],
     }
+
     const releaseBacklog = new Object({
         _sprints: sprints,
         _version: version,
         _endDate: endDate,
-        _permissions: permissions
     });
 
     const currentUser = req.auth.data.user;
@@ -129,19 +123,16 @@ async function replace(req, res, next) {
 
 async function update(req, res, next) {
     const { id } = req.params;
-    const { sprints, version, endDate, permissions } = {
+    const { sprints, version, endDate } = {
         sprints: req.body.sprints || undefined,
         version: req.body.version || undefined,
         endDate: req.body.endDate || undefined,
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
-            return new mongoose.Types.ObjectId(id);
-        }) : undefined,
     }
+
     const releaseBacklog = new Object({
         _sprints: sprints,
         _version: version,
         _endDate: endDate,
-        _permissions: permissions
     });
 
     const currentUser = req.auth.data.user;

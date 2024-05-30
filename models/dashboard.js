@@ -1,13 +1,22 @@
 const mongoose = require('mongoose');
-const Proyecto = require('./project');
-const Column = require('./project');
-const Release = require('./releaseBacklog');
+const Project = require('./project');
+const Column = require('./column');
+const ReleaseBacklog = require('./releaseBacklog');
 
 const schema = mongoose.Schema({
-    _project: Proyecto,
-    _startDate: Date,
-    _productBacklogColumn: Column,
-    _releasesBacklog: Release,
+    _project: [{
+        type: mongoose.ObjectId,
+        ref: Project.prototype.name, //duda
+    }],
+    _startDate: Date,   
+    _productBacklogColumn: [{
+        type: mongoose.ObjectId,
+        ref: Column.prototype.name,
+    }],
+    _releasesBacklog: [{
+        type: mongoose.ObjectId,
+        ref: ReleaseBacklog.prototype.name,
+    }],
 });
 
 class Dashboard {
