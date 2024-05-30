@@ -6,4 +6,11 @@ const PermissionsEnum = {
     'REPLACE': 'REPLACE',
     'LIST': 'LIST',
 }
-module.exports = PermissionsEnum;
+const HttpPermissionsEnum = {
+    'POST': 'POST',
+    'GET': 'GET',
+    'PATCH': 'PATCH',
+    'PUT': 'PUT',
+    'DELETE': 'DELETE',
+}
+module.exports = {PermissionsEnum, HttpPermissionsEnum};

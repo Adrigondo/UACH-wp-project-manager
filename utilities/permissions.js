@@ -1,6 +1,6 @@
 const { defineAbility } = require('@casl/ability');
 const Role = require('../models/users/role');
-const SanitiziedUser = require('../models/sanitiziedUser');
+const SanitiziedUser = require('../models/users/sanitiziedUser');
 
 const defineAbilityFor = async (user) => {
     return await defineAbility(async (can, cannot) => {

@@ -6,9 +6,18 @@ const schema = mongoose.Schema({
     _applicationDate: Date,
     _startDate: Date,
     _description: String,
-    _proyectManager: User,
-    _proyectOwner: User,
-    _developmentTeam: User,
+    _proyectManager: [{
+        type: mongoose.ObjectId,
+        ref: User.prototype.name,
+    }],
+    _proyectOwner: [{
+        type: mongoose.ObjectId,
+        ref: User.prototype.name,
+    }],
+    _developmentTeam: [{
+        type: mongoose.ObjectId,
+        ref: User.prototype.name,
+    }],
 });
 
 class Project {
@@ -72,3 +81,4 @@ class Project {
 }
 
 schema.loadClass(Project);
+module.exports = schema;
