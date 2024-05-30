@@ -1,27 +1,195 @@
 const express = require('express');
+const Column = require('../models/users/column');
 
-function create(req, res, next) {
-    res.send('Columns create');
+async function create(req, res, next) {
+    const { userStories} = req.body;
+    const permissionsArray = JSON.parse(permissions).map((id) => {
+        return new mongoose.Types.ObjectId(id);
+    });
+    //Lista de User Story
+
+    const column = new Column({ userStories});
+
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+    
+    if (ability.cannot('CREATE', 'Column')) {
+        res.status(403).json({
+            msg: " couldn't be created",
+            obj: {},
+        });
+        return;
+    }
+
+    column.save().then((obj) => {
+        res.status(200).json({
+            msg: 'Column correctly created',
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: "Column couldn't be created",
+            obj: exc,
+        })
+    });
 }
 
-function list(req, res, next) {
-    res.send('Columns list');
+
+async function list(req, res, next) {
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('LIST', 'Column')) {
+        res.status(403).json({
+            msg: " couldn't be listed",
+            obj: {},
+        });
+        return;
+    }
+
+    Column.find().populate('_permissions').then((obj) => {
+        res.status(200).json({
+            msg: 'Column list',
+            obj: obj,
+        });
+    }).catch((exc) => {
+        console.error(exc)
+        res.status(500).json({
+            msg: "Column couldn't be listed",
+            obj: exc,
+        })
+    });
+
 }
 
-function index(req, res, next) {
-    res.send(`Columns index ${req.params.id}`);
+
+async function index(req, res, next) {
+    const { id } = req.params;
+    const currentUser = req.auth.data.user;
+    
+
+    if (ability.cannot('READ', '')) {
+        res.status(403).json({
+            msg: " couldn't be readed",
+            obj: {},
+        });
+        return;
+    }
+
+    Column.findOne({ _id: id }).populate('_permissions').then((obj) => {
+        res.status(200).json({
+            msg: `Column ${id}`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Column  ${id} couldn't be recovered`,
+            obj: exc,
+        })
+    });
 }
 
-function replace(req, res, next) {
-    res.send(`Columns replace ${req.params.id}`);
+
+async function replace(req, res, next) {
+    const { id } = req.params;
+    const { userStories, permissions } = {
+        userStories: req.body.userStories || "",
+        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
+            return new mongoose.Types.ObjectId(id);
+        }) : [],
+    }
+    const column = new Object({
+        _userStories: userStories,
+        _permissions: permissions
+    });
+
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('REPLACE', 'Column')) {
+        res.status(403).json({
+            msg: "Column couldn't be replaced",
+            obj: {},
+        });
+        return;
+    }
+
+    Column.findOneAndUpdate({ _id: id }, column, { new: true }).then((obj) => {
+        res.status(200).json({
+            msg: `Column ${obj.id} updated`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Column  ${obj.id} couldn't be updated`,
+            obj: exc,
+        })
+    });
 }
 
-function update(req, res, next) {
-    res.send(`Columns update ${req.params.id}`);
+
+async function update(req, res, next) {
+    const { id } = req.params;
+    const { userStories, permissions } = {
+        userStories: req.body.userStories || undefined,
+        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
+            return new mongoose.Types.ObjectId(id);
+        }) : undefined,
+    }
+    const column = new Object({
+        _userStories: userStories,
+        _permissions: permissions
+    });
+
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+    
+    if (ability.cannot('UPDATE', 'Column')) {
+        res.status(403).json({
+            msg: "Column couldn't be updated",
+            obj: {},
+        });
+        return;
+    }
+
+    Column.findOneAndUpdate({ _id: id }, column, { new: true }).then((obj) => {
+        res.status(200).json({
+            msg: `Column ${obj.id} updated`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Column  ${obj.id} couldn't be updated`,
+            obj: exc,
+        })
+    });
 }
 
-function destroy(req, res, next) {
-    res.send(`Columns destroy ${req.params.id}`);
+async function destroy(req, res, next) {
+    const { id } = req.params;
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('DELETE', 'Column')) {
+        res.status(403).json({
+            msg: "Column couldn't be deleted",
+            obj: {},
+        });
+        return;
+    }
+
+    Column.findByIdAndDelete({ _id: id }).then((obj) => {
+        res.status(200).json({
+            msg: `Column ${id} deleted`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Column  ${id} couldn't be deleted`,
+            obj: exc,
+        })
+    });
 }
+
 
 module.exports = { create, list, index, replace, update, destroy };

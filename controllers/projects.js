@@ -1,27 +1,213 @@
 const express = require('express');
+const Project = require('../models/users/project');
+const mongoose = require('mongoose');
+const { defineAbilityFor } = require('../utilities/permissions');
 
-function create(req, res, next) {
-    res.send('Projects create');
+async function create(req, res, next) {
+    const { projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam, permissions } = req.body;
+    const permissionsArray = JSON.parse(permissions).map((id) => {
+        return new mongoose.Types.ObjectId(id);
+    });
+    const project = new Project({ projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam, permissions: permissionsArray });
+
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('CREATE', 'Project')) {
+        res.status(403).json({
+            msg: "Project couldn't be created",
+            obj: {},
+        });
+        return;
+    }
+
+    project.save().then((obj) => {
+        res.status(200).json({
+            msg: 'Project correctly created',
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: "Project couldn't be created",
+            obj: exc,
+        })
+    });
 }
 
-function list(req, res, next) {
-    res.send('Projects list');
+async function list(req, res, next) {
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('LIST', 'Project')) {
+        res.status(403).json({
+            msg: "Project couldn't be listed",
+            obj: {},
+        });
+        return;
+    }
+
+    Project.find().populate('_permissions').then((obj) => {
+        res.status(200).json({
+            msg: 'Project list',
+            obj: obj,
+        });
+    }).catch((exc) => {
+        console.error(exc)
+        res.status(500).json({
+            msg: "Project couldn't be listed",
+            obj: exc,
+        })
+    });
 }
 
-function index(req, res, next) {
-    res.send(`Projects index ${req.params.id}`);
+async function index(req, res, next) {
+    const { id } = req.params;
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('READ', 'Project')) {
+        res.status(403).json({
+            msg: "Project couldn't be readed",
+            obj: {},
+        });
+        return;
+    }
+
+    Project.findOne({ _id: id }).populate('_permissions').then((obj) => {
+        res.status(200).json({
+            msg: `Project ${id}`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Project  ${id} couldn't be recovered`,
+            obj: exc,
+        })
+    });
 }
 
-function replace(req, res, next) {
-    res.send(`Projects replace ${req.params.id}`);
+async function replace(req, res, next) {
+    const { id } = req.params;
+    const { projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam, permissions } = {
+        projectName: req.body.projectName || "",
+        applicationDate: req.body.applicationDate || "",
+        startDate: req.body.startDate || "",
+        description: req.body.description || "",
+        proyectManager: req.body.proyectManager || "",
+        proyectOwner: req.body.proyectOwner || "",
+        developmentTeam: req.body.developmentTeam || "",
+        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
+            return new mongoose.Types.ObjectId(id);
+        }) : [],
+    }
+    const project = new Object({
+        _projectName: projectName,
+        _applicationDate: applicationDate,
+        _startDate: startDate,
+        _description: description,
+        _proyectManager: proyectManager,
+        _proyectOwner: proyectOwner,
+        _developmentTeam: developmentTeam,
+        _permissions: permissions
+    });
+
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('REPLACE', 'Project')) {
+        res.status(403).json({
+            msg: "Project couldn't be replaced",
+            obj: {},
+        });
+        return;
+    }
+
+    Project.findOneAndUpdate({ _id: id }, project, { new: true }).then((obj) => {
+        res.status(200).json({
+            msg: `Project ${obj.id} updated`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Project  ${obj.id} couldn't be updated`,
+            obj: exc,
+        })
+    });
 }
 
-function update(req, res, next) {
-    res.send(`Projects update ${req.params.id}`);
+async function update(req, res, next) {
+    const { id } = req.params;
+    const { projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam, permissions } = {
+        projectName: req.body.projectName || undefined,
+        applicationDate: req.body.applicationDate || undefined,
+        startDate: req.body.startDate || undefined,
+        description: req.body.description || undefined,
+        proyectManager: req.body.proyectManager || undefined,
+        proyectOwner: req.body.proyectOwner || undefined,
+        developmentTeam: req.body.developmentTeam || undefined,
+        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
+            return new mongoose.Types.ObjectId(id);
+        }) : undefined,
+    }
+    const project = new Object({
+        projectName: projectName,
+        _applicationDate: applicationDate,
+        _startDate: startDate,
+        _description: description,
+        _proyectManager: proyectManager,
+        _proyectOwner: proyectOwner,
+        _developmentTeam: developmentTeam,
+        _permissions: permissions
+    });
+
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+    
+    if (ability.cannot('UPDATE', 'Project')) {
+        res.status(403).json({
+            msg: "Project couldn't be updated",
+            obj: {},
+        });
+        return;
+    }
+
+    Project.findOneAndUpdate({ _id: id }, project, { new: true }).then((obj) => {
+        res.status(200).json({
+            msg: `Project ${obj.id} updated`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Project  ${obj.id} couldn't be updated`,
+            obj: exc,
+        })
+    });
 }
 
-function destroy(req, res, next) {
-    res.send(`Projects destroy ${req.params.id}`);
+async function destroy(req, res, next) {
+    const { id } = req.params;
+    const currentUser = req.auth.data.user;
+    const ability = await defineAbilityFor(currentUser);
+
+    if (ability.cannot('DELETE', 'Project')) {
+        res.status(403).json({
+            msg: "Project couldn't be deleted",
+            obj: {},
+        });
+        return;
+    }
+
+    Project.findByIdAndDelete({ _id: id }).then((obj) => {
+        res.status(200).json({
+            msg: `Project ${id} deleted`,
+            obj: obj,
+        });
+    }).catch((exc) => {
+        res.status(500).json({
+            msg: `Project  ${id} couldn't be deleted`,
+            obj: exc,
+        })
+    });
 }
 
-module.exports = { create, list, index, replace, update, destroy };
+module.exports = { create, list, index, replace, update, destroy }
