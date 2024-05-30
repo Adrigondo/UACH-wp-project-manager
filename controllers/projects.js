@@ -1,5 +1,5 @@
 const express = require('express');
-const Project = require('../models/users/project');
+const Project = require('../models/project');
 const mongoose = require('mongoose');
 
 async function create(req, res, next) {

@@ -1,5 +1,5 @@
 const express = require('express');
-const Column = require('../models/users/column');
+const Column = require('../models/column');
 
 async function create(req, res, next) {
     const { userStories} = req.body;

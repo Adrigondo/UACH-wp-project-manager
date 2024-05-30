@@ -1,5 +1,5 @@
 const express = require('express');
-const Role = require('../models/users/sprint');
+const Role = require('../models/sprint');
 const mongoose = require('mongoose');
 
 async function create(req, res, next) {

@@ -1,5 +1,5 @@
 const express = require('express');
-const Role = require('../models/role');
+const Role = require('../models/users/role');
 const mongoose = require('mongoose');
 const { defineAbilityFor } = require('../utilities/permissions');
 

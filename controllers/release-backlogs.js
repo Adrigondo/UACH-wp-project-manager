@@ -1,5 +1,5 @@
 const express = require('express');
-const ReleaseBacklog = require('../models/users/releaseBacklog');
+const ReleaseBacklog = require('../models/releaseBacklog');
 const mongoose = require('mongoose');
 
 async function create(req, res, next) {

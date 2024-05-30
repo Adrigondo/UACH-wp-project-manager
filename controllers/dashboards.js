@@ -1,5 +1,5 @@
 const express = require('express');
-const Dashboard = require('../models/users/dashboard');
+const Dashboard = require('../models/dashboard');
 const mongoose = require('mongoose');
 
 async function create(req, res, next) {
