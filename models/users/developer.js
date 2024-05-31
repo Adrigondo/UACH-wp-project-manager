@@ -12,10 +12,15 @@ const schema = mongoose.Schema({
         type: mongoose.ObjectId,
         ref: 'DeveloperSkill'
     }],
+    _userId: {
+        type: mongoose.ObjectId,
+        unique: true, 
+        ref: 'User'
+    },
 });
 
 class Developer {
-    constructor(name, lastName, birth, curp, rfc, address, skills,) {
+    constructor(name, lastName, birth, curp, rfc, address, skills, userId) {
         this._name = name;
         this._lastName = lastName;
         this._birth = birth;
@@ -23,6 +28,7 @@ class Developer {
         this._rfc = rfc;
         this._address = address;
         this._skills = skills;
+        this._userId = userId;
     }
     get name() {
         return this._name;
@@ -72,7 +78,14 @@ class Developer {
     set skills(skills) {
         this._skills = skills;
     }
+
+    get userId() {
+        return this.userId;
+    }
+    set userId(userId) {
+        this.userId = userId;
+    }
 }
 
 schema.loadClass(Developer);
-module.exports = schema;
+module.exports = mongoose.model("Developer", schema);

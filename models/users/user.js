@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const DeveloperSchema = require('./developer.schema');
 
 const schema = mongoose.Schema({
     _username: String,
@@ -14,7 +13,6 @@ const schema = mongoose.Schema({
         type: mongoose.ObjectId,
         ref: 'UserSocialNetwork'
     }],
-    _developerData: DeveloperSchema,
 });
 
 class User {
