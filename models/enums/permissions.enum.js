@@ -2,7 +2,7 @@ const PermissionsEnum = {
     'CREATE': 'CREATE',
     'READ': 'READ',
     'UPDATE': 'UPDATE',
-    'DELETE': 'DELETE',
+    'REMOVE': 'REMOVE',
     'REPLACE': 'REPLACE',
     'LIST': 'LIST',
 }

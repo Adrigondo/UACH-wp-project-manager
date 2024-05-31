@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
-const UserStory = require('./userStory');
 
 const schema = mongoose.Schema({
     _userStories: [{
         type: mongoose.ObjectId,
-        ref: UserStory.prototype.name,
+        ref: 'UserStory'
     }],
 });
 
@@ -23,3 +22,4 @@ class Column {
 }
 
 schema.loadClass(Column);
+module.exports = mongoose.model('Column', schema);

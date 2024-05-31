@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
-const Permission = require('./permission');
 
 const schema = mongoose.Schema({
     _description: String,
     _status: Boolean,
     _permissions: [{
         type: mongoose.ObjectId,
-        ref: Permission.prototype.name,
+        ref: 'Permission'
     }],
 });
 

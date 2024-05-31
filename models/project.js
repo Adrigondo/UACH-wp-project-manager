@@ -1,27 +1,30 @@
 const mongoose = require('mongoose');
-const User = require('./users/user');
 
 const schema = mongoose.Schema({
     _projectName: String,
     _applicationDate: Date,
     _startDate: Date,
     _description: String,
-    _proyectManager: [{
+    _proyectManagerId: {
         type: mongoose.ObjectId,
-        ref: User.prototype.name,
-    }],
-    _proyectOwner: [{
+        ref: 'User',
+    },
+    _proyectOwnerId: {
         type: mongoose.ObjectId,
-        ref: User.prototype.name,
-    }],
+        ref: 'User',
+    },
     _developmentTeam: [{
         type: mongoose.ObjectId,
-        ref: User.prototype.name,
+        ref: 'User',
     }],
+    _dashboard: {
+        type: mongoose.ObjectId,
+        ref: 'Dashboard',
+    },
 });
 
 class Project {
-    constructor(projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam  ) {
+    constructor(projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam, dashboard) {
         this._projectName = projectName;
         this._applicationDate = applicationDate;
         this._startDate = startDate;
@@ -29,6 +32,7 @@ class Project {
         this._proyectManager = proyectManager;
         this._proyectOwner = proyectOwner;
         this._developmentTeam = developmentTeam;
+        this._dashboard = dashboard;
     }
     get projectName() {
         return this._projectName;
@@ -78,7 +82,14 @@ class Project {
     set developmentTeam(developmentTeam) {
         this._developmentTeam = developmentTeam;
     }
+
+    get dashboard() {
+        return this._dashboard;
+    }
+    set dashboard(dashboard) {
+        this._dashboard = dashboard;
+    }
 }
 
 schema.loadClass(Project);
-module.exports = schema;
+module.exports = mongoose.model('Project', schema);

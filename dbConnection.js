@@ -1,4 +1,5 @@
-const { initializeAdminIfNeeded } = require("./utilities/initializeDb");
+
+const mongoose = require('mongoose');
 
 module.exports = {
   run: () => {

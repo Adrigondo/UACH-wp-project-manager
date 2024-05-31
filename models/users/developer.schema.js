@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const AddressSchema = require('./address.schema');
-const DeveloperSkill = require('./developerSkill');
 
 const schema = mongoose.Schema({
     _name: String,
@@ -11,7 +10,7 @@ const schema = mongoose.Schema({
     _address: AddressSchema,
     _skills: [{
         type: mongoose.ObjectId,
-        ref: DeveloperSkill.prototype.name
+        ref: 'DeveloperSkill'
     }],
 });
 

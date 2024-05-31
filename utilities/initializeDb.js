@@ -1,10 +1,9 @@
-//seed.js
-const RolesEnum = require('../models/enums/roles.enum');
-var User = require('../models/users/user');
-const Role = require('../models/users/role');
+const bcrypt = require('bcrypt');
 const input = require('./input');
+const RolesEnum = require('../models/enums/roles.enum');
+const User = require('../models/users/user');
+const Role = require('../models/users/role');
 const Permission = require('../models/users/permission');
-const permission = require('../models/users/permission');
 const { PermissionsEnum, HttpPermissionsEnum } = require('../models/enums/permissions.enum');
 
 async function createAdminPermissions() {
@@ -17,10 +16,10 @@ async function createAdminPermissions() {
         }),
     ];
 
-    Model.insertMany(permissions).then((obj) => {
+    Permission.insertMany(permissions).then((obj) => {
         console.log("Admin permissions created.");
     }).catch((exc) => {
-        console.error("Admin permissions couldn't be created.");
+        console.error("Admin permissions couldn't be created.", exc);
         throw "Admin permissions couldn't be created";
     });
 }
@@ -36,7 +35,7 @@ async function createAdminRole() {
     role.save().then((obj) => {
         console.log("Role 'ADMIN' created.");
     }).catch((exc) => {
-        console.error("Role 'ADMIN' couldn't be created.");
+        // console.error("Role 'ADMIN' couldn't be created.");
         throw "Role 'ADMIN' couldn't be created";
     });
 }
@@ -67,25 +66,26 @@ async function createAdminUser() {
 }
 
 const initializeAdminIfNeeded = async () => {
-    return new Promise((resolve, reject) => {
-        User.find().populate("_roleId").countDocuments({ "role.description": RolesEnum.ADMIN }, function (err, count) {
-            if (count <= 0) {
-                createAdminPermissions().then(() => {
-                    return createAdminPermissions();
-                }).then(() => {
-                    return createAdminRole();
-                }).then(() => {
-                    return createAdminUser().then(() => {
-                        resolve(true);
-                    });
-                }).catch((err) => {
-                    reject(err);
+    return new Promise(async (resolve, reject) => {
+        const count = await User.find().populate("_roles").countDocuments({ "role.description": RolesEnum.ADMIN });
+        console.log("Admin counter:", count, await User.find().populate("_roles"))
+        if (count <= 0) {
+            createAdminPermissions().then(async() => {
+                return await createAdminPermissions();
+            }).then(async() => {
+                return await createAdminRole();
+            }).then(async() => {
+                return await createAdminUser().then(() => {
+                    resolve(true);
                 });
-            } else {
-                resolve(false);
-            }
-        });
-    })
+            }).catch((exc) => {
+                console.error(exc);
+                reject(exc);
+            });
+        } else {
+            resolve(false);
+        }
+    });
 };
 
 module.exports = { initializeAdminIfNeeded };

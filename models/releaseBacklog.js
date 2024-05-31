@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
-const Sprint = require('./sprint');
 
 const schema = mongoose.Schema({
     _sprints: [{
         type: mongoose.ObjectId,
-        ref: Sprint.prototype.name,
+        ref: 'Sprint',
     }],
     _version: String,
     _endDate: Date,
@@ -41,3 +40,4 @@ class ReleaseBacklog {
 }
 
 schema.loadClass(ReleaseBacklog);
+module.exports = mongoose.model('ReleaseBacklog', schema);

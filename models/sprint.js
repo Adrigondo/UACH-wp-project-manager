@@ -1,26 +1,25 @@
 const mongoose = require('mongoose');
-const Column = require('./column');
 
 const schema = mongoose.Schema({
     _backlog: [{
         type: mongoose.ObjectId,
-        ref: Column.prototype.name,
+        ref: 'Column',
     }],
     _doing: [{
         type: mongoose.ObjectId,
-        ref: Column.prototype.name,
+        ref: 'Column',
     }],
     _done: [{
         type: mongoose.ObjectId,
-        ref: Column.prototype.name,
+        ref: 'Column',
     }],
     _testing:[{
         type: mongoose.ObjectId,
-        ref: Column.prototype.name,
+        ref: 'Column',
     }],
     _release: [{
         type: mongoose.ObjectId,
-        ref: Column.prototype.name,
+        ref: 'Column',
     }],
 });
 
@@ -71,3 +70,4 @@ class Sprint {
 }
 
 schema.loadClass(Sprint);
+module.exports = mongoose.model('Sprint', schema);

@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const DeveloperSchema = require('./developer.schema');
-const Role = require('./role');
-const UserSocialNetwork = require('./userSocialNetwork');
 
 const schema = mongoose.Schema({
     _username: String,
@@ -10,11 +8,11 @@ const schema = mongoose.Schema({
     _salt: String,
     _roles: [{
         type: mongoose.ObjectId,
-        ref: Role.prototype.name,
+        ref: 'Role',
     }],
     _socialNetworks: [{
         type: mongoose.ObjectId,
-        ref: UserSocialNetwork.prototype.name
+        ref: 'UserSocialNetwork'
     }],
     _developerData: DeveloperSchema,
 });

@@ -4,7 +4,7 @@ const schema = mongoose.Schema({
     _street: String,
     _number: String,
     _zip: String,
-    _city   : String,
+    _city: String,
     _state: String,
     _country: String,
 });
