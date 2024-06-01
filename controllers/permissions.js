@@ -1,5 +1,5 @@
 const express = require('express');
-const Permission = require('../models/permission');
+const Permission = require('../models/users/permission');
 const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {

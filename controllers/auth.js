@@ -23,7 +23,6 @@ function login(req, res, next) {
             throw "Usuario o contraseña incorrectos";
         }
     }).then(({ tryPassword, userPassword, user }) => {
-        console.log(tryPassword, userPassword, user);
         if (tryPassword === userPassword) {
             res.status(200).json({
                 msg: "Successful login",
