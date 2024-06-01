@@ -16,28 +16,19 @@ const schema = mongoose.Schema({
 });
 
 class User {
-    constructor(name, lastName, email, password, salt, roles, socialNetworks, developerData) {
-        this._name = name;
-        this._lastName = lastName;
+    constructor(username, email, password, salt, roles, socialNetworks) {
+        this._username=username;
         this._email = email;
         this._password = password;
         this._salt = salt;
         this._roles = roles;
         this._socialNetworks = socialNetworks;
-        this._developerData = developerData;
     }
-    get name() {
-        return this._name;
+    get username() {
+        return this._username;
     }
-    set name(name) {
-        this._name = name;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-    set lastName(lastName) {
-        this._lastName = lastName;
+    set username(username) {
+        this._username = username;
     }
 
     get email() {
@@ -73,13 +64,6 @@ class User {
     }
     set socialNetworks(socialNetworks) {
         this._socialNetworks = socialNetworks;
-    }
-
-    get developerData() {
-        return this._developerData;
-    }
-    set developerData(developerData) {
-        this._developerData = developerData;
     }
 }
 

@@ -1,22 +1,15 @@
 class SanitiziedUser {
-    constructor({ _name, _lastName, _email, _roles }) {
-        this._name = _name;
-        this._lastName = _lastName;
+    constructor({ _username, _lastName, _email, _roles }) {
+        this._username = _username;
         this._email = _email;
         this._roles = _roles;
     }
-    get name() {
-        return this._name;
-    }
-    set name(name) {
-        this._name=name;
-    }
 
-    get lastName() {
-        return this._lastName;
+    get username() {
+        return this._username;
     }
-    set lastName(lastName) {
-        this._lastName=lastName;
+    set username(username) {
+        this.__username = _username;
     }
 
     get email() {
@@ -31,6 +24,20 @@ class SanitiziedUser {
     }
     set roles(roles) {
         this._roles=roles;
+    }
+
+    get socialNetworks() {
+        return this._socialNetworks;
+    }
+    set socialNetworks(socialNetworks) {
+        this._socialNetworks = socialNetworks;
+    }
+
+    get developerData() {
+        return this._developerData;
+    }
+    set developerData(developerData) {
+        this._developerData = developerData;
     }
 }
 module.exports = SanitiziedUser;

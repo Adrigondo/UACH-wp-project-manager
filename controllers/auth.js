@@ -1,22 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const SanitiziedUser = require('../models/sanitiziedUser');
+const User = require('../models/users/user');
+const SanitiziedUser = require('../models/users/sanitiziedUser');
 
 function login(req, res, next) {
     const { email, password } = req.body;
-    
     User.findOne({ _email: email }).then(async (user) => {
         if (user) {
             const sanitiziedUser = new SanitiziedUser({
-                _name: user.name,
-                _lastName: user.lastName,
+                _username: user.username,
                 _email: user.email,
                 _roles: user.roles,
+                _socialNetworks: user.socialNetworks,
             });
-            // console.debug("Sanitizied User:", sanitiziedUser);
             return {
                 tryPassword: await bcrypt.hash(password, user.salt),
                 userPassword: user.password,
@@ -26,6 +23,7 @@ function login(req, res, next) {
             throw "Usuario o contraseña incorrectos";
         }
     }).then(({ tryPassword, userPassword, user }) => {
+        console.log(tryPassword, userPassword, user);
         if (tryPassword === userPassword) {
             res.status(200).json({
                 msg: "Successful login",
@@ -33,7 +31,7 @@ function login(req, res, next) {
                     data: {
                         user: user,
                     },
-                    exp: Math.floor(Date.now() / 1000) + 86400,
+                    exp: Math.floor(Date.now() / 1000) + 86400, // 1 day
                 }, req.app.get('jwt.secret')),
             });
         } else {
@@ -48,4 +46,4 @@ function login(req, res, next) {
     // res.render('login', { title: 'Express' });
 }
 
-module.exports = { home, login };
+module.exports = { login };

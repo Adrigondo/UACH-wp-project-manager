@@ -19,7 +19,7 @@ const getAdminPermissionByEnum = async (permission) => {
     });
 }
 
-async function createAdminPermissions(permissionsEnum) {
+function createAdminPermissions(permissionsEnum) {
     return new Promise(async (resolve, reject) => {
         const permissions = Object.keys(permissionsEnum).map((permission) => {
             return { _description: "all", _type: permission }
@@ -32,10 +32,14 @@ async function createAdminPermissions(permissionsEnum) {
         )).filter((permission) => {
             return !permission.id
         });
-
+        if (permissionsToCreate.length == 0) {
+            console.log("Admin permissions already exists.");
+            resolve(false);
+            return;
+        }
         await Permission.insertMany(permissionsToCreate).then((obj) => {
             console.log("Admin permissions created.");
-            resolve();
+            resolve(true);
         }).catch((exc) => {
             reject({
                 msg: "Admin permissions couldn't be created",
@@ -45,50 +49,64 @@ async function createAdminPermissions(permissionsEnum) {
     });
 }
 
-async function updateRoleWithPermissions(role) {
-    const isCreatePermissionInRole = role.permissions.find(
-        (rolePermission) => {
-            return rolePermission._description === "all" && rolePermission._type === PermissionsEnum.CREATE;
+function updateRoleWithPermissions(role) {
+    return new Promise(async (resolve, reject) => {
+        let hasUpdatedPermissions = false;
+        const isCreatePermissionInRole = role.permissions.find(
+            (rolePermission) => {
+                return rolePermission._description === "all" && rolePermission._type === PermissionsEnum.CREATE;
+            }
+        );
+        if (!isCreatePermissionInRole) {
+            const createPermission = await getAdminPermissionByEnum(PermissionsEnum.CREATE);
+            role._permissions = [
+                ...role._permissions,
+                createPermission._id,
+            ];
+            hasUpdatedPermissions = true;
         }
-    );
-    if (!isCreatePermissionInRole) {
-        const createPermission = await getAdminPermissionByEnum(PermissionsEnum.CREATE);
-        role._permissions = [
-            ...role._permissions,
-            createPermission._id,
-        ];
-    }
 
-    const isPostPermissionInRole = role.permissions.find(
-        (rolePermission) => {
-            return rolePermission._description === "all" && rolePermission._type === HttpPermissionsEnum.POST;
+        const isPostPermissionInRole = role.permissions.find(
+            (rolePermission) => {
+                return rolePermission._description === "all" && rolePermission._type === HttpPermissionsEnum.POST;
+            }
+        );
+        if (!isPostPermissionInRole) {
+            const postPermission = await getAdminPermissionByEnum(HttpPermissionsEnum.POST);
+            role._permissions = [
+                ...role._permissions,
+                postPermission._id,
+            ];
+            hasUpdatedPermissions = true;
         }
-    );
-    if (!isPostPermissionInRole) {
-        const postPermission = await getAdminPermissionByEnum(HttpPermissionsEnum.POST);
-        role._permissions = [
-            ...role._permissions,
-            postPermission._id,
-        ];
-    }
+        if (!hasUpdatedPermissions) {
+            console.log("Role 'ADMIN' has already minimum necessary permissions");
+            resolve(false);
+            return;
+        }
 
-    return await role.save().then((obj) => {
-        console.log("Role 'ADMIN' updated with permissions");
-        resolve();
-    }).catch((exc) => {
-        reject({
-            msg: "Role 'ADMIN' couldn't be updated with permissions",
-            exc
+        role.save().then((obj) => {
+            console.log("Role 'ADMIN' updated with permissions");
+            resolve(true);
+        }).catch((exc) => {
+            reject({
+                msg: "Role 'ADMIN' couldn't be updated with permissions",
+                exc,
+            });
         });
-    });
+    })
 }
 
-async function createAdminRole() {
+function createAdminRole() {
     return new Promise(async (resolve, reject) => {
-        const roleExistent = await getRoleByEnum(Role.ADMIN);
-        console.log("RoleExistent:", roleExistent);
+        const roleExistent = await getRoleByEnum(RolesEnum.ADMIN);
+
         if (roleExistent) {
-            updateRoleWithPermissions(roleExistent)
+            updateRoleWithPermissions(roleExistent).then((result)=>{
+                resolve(result);
+            }).catch((errorMessage)=>{
+                reject(errorMessage);
+            });
         } else {
             const createPermission = await getAdminPermissionByEnum(PermissionsEnum.CREATE);
             const postPermission = await getAdminPermissionByEnum(HttpPermissionsEnum.POST);
@@ -113,7 +131,14 @@ async function createAdminRole() {
 
 function createAdminUser() {
     return new Promise(async (resolve, reject) => {
-
+        const roleAdmin = await getRoleByEnum(RolesEnum.ADMIN);
+        const adminExists = await User.findOne({ "_roles": roleAdmin.id });
+        
+        if (adminExists) {
+            console.log("At least an Admin user already exists.")
+            resolve(false);
+            return;
+        }
         const salt = await bcrypt.genSalt(10);
 
         console.log("Create an admin user to manage the db.")
@@ -121,18 +146,18 @@ function createAdminUser() {
         const email = await input("email: ");
         const password = await input("password: ");
         const passwordHash = await bcrypt.hash(password, salt);
-
-        const roleAdmin = await Role.findOne({ "_description": "ADMIN" });
+        console.log(username)
         const user = new User({
             username,
             email,
+            salt,
             password: passwordHash,
             roles: [roleAdmin]
         });
 
         user.save().then((obj) => {
             console.log("Admin created.")
-            resolve();
+            resolve(true);
         }).catch((exc) => {
             reject({
                 msg: "Admin couln't be created",
@@ -144,28 +169,22 @@ function createAdminUser() {
 
 const initializeAdminIfNeeded = async () => {
     return new Promise(async (resolve, reject) => {
-        const count = await User.find().populate("_roles").countDocuments({ "role.description": RolesEnum.ADMIN });
-        console.log("Admin counter:", count, await User.find().populate("_roles"))
-        if (count <= 0) {
-            await createAdminPermissions(PermissionsEnum).then(
-                async () => await createAdminPermissions(HttpPermissionsEnum)
-            ).then(
-                async () => await createAdminRole()
-            ).then(
-                async () => {
-                    return await createAdminUser().then(() => {
-                        resolve(true);
-                    });
-                }
-            ).catch(
-                (exc) => {
-                    console.error(exc);
-                    reject(exc);
-                }
-            );
-        } else {
-            resolve(false);
-        }
+        await createAdminPermissions(PermissionsEnum).then(
+            async () => await createAdminPermissions(HttpPermissionsEnum)
+        ).then(
+            async () => await createAdminRole()
+        ).then(
+            async () => {
+                return await createAdminUser().then((result) => {
+                    resolve(result);
+                });
+            }
+        ).catch(
+            (exc) => {
+                console.error(exc);
+                reject(exc);
+            }
+        );
     });
 };
 

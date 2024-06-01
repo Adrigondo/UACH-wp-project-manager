@@ -11,12 +11,11 @@ module.exports = {
       const db = mongoose.connection;
 
       db.on('open', () => {
-        console.log("Connection to database sucessful!");
         resolve(db);
       });
 
       db.on('error', (error) => {
-        console.error("Couldn't connect to database");
+        // console.error("Couldn't connect to database");
         resolve(error);
       });
     });
