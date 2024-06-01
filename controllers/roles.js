@@ -8,7 +8,7 @@ async function create(req, res, next) {
     const permissions = permissionsArray ? permissionsArray.map((id) => {
         return new mongoose.Types.ObjectId(id);
     }) : [];
-    const role = new Role({ description, status, permissions: permissionsArray });
+    const role = new Role({ description, status, permissions });
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);

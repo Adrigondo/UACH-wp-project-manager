@@ -7,9 +7,9 @@ async function create(req, res, next) {
     const {
         name, lastName, birth, curp, rfc, address, skills: skillsArray, userId
     } = req.body;
-    const skills = skillsArray.map((id) => {
-        return mongoose.Types.ObjectId(id);
-    });
+    const skills = skillsArray ? skillsArray.map((id) => {
+        return new mongoose.Types.ObjectId(id);
+    }) : [];
 
     const developer = new Developer({ name, lastName, birth, curp, rfc, address, skills, userId });
 
@@ -146,16 +146,16 @@ async function update(req, res, next) {
     const {
         name, lastName, birth, curp, rfc, address, skills, userId
     } = {
-        name: req.body.name || "",
-        lastName: req.body.lastName || "",
-        birth: req.body.birth || "",
-        curp: req.body.curp || "",
-        rfc: req.body.rfc || "",
-        address: req.body.address || "",
-        userId: req.body.userId || null,
+        name: req.body.name || undefined,
+        lastName: req.body.lastName || undefined,
+        birth: req.body.birth || undefined,
+        curp: req.body.curp || undefined,
+        rfc: req.body.rfc || undefined,
+        address: req.body.address || undefined,
+        userId: req.body.userId || undefined,
         skills: req.body.skills ? req.body.skills.map((id) => {
             return new mongoose.Types.ObjectId(id);
-        }) : [],
+        }) : undefined,
     }
 
     const developer = new Object({

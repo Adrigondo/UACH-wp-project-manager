@@ -6,12 +6,13 @@ const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { username, email, password, roles: rolesArray, socialNetworks: socialNetworksArray } = req.body;
-    const roles = rolesArray.map((id) => {
-        return mongoose.Types.ObjectId(id);
-    });
-    const socialNetworks = socialNetworksArray.map((id) => {
-        return mongoose.Types.ObjectId(id);
-    });
+    
+    const roles = rolesArray ? rolesArray.map((id) => {
+        return new mongoose.Types.ObjectId(id);
+    }) : [];
+    const socialNetworks = socialNetworksArray ? socialNetworksArray.map((id) => {
+        return new mongoose.Types.ObjectId(id);
+    }) : [];
     const salt = await bcrypt.genSalt(10);
 
     const passwordHash = await bcrypt.hash(password, salt);
@@ -53,7 +54,7 @@ async function list(req, res, next) {
         return;
     }
 
-    User.find().then((obj) => {
+    User.find().populate("_roles").populate("_socialNetworks").then((obj) => {
         res.status(200).json({
             msg: 'Users list',
             obj: obj,
@@ -80,7 +81,7 @@ async function index(req, res, next) {
         return;
     }
 
-    User.findOne({ _id: id }).then((obj) => {
+    User.findOne({ _id: id }).populate("_roles").populate("_socialNetworks").then((obj) => {
         res.status(200).json({
             msg: `User ${id}`,
             obj: obj,
