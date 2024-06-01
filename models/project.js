@@ -5,11 +5,11 @@ const schema = mongoose.Schema({
     _applicationDate: Date,
     _startDate: Date,
     _description: String,
-    _proyectManagerId: {
+    _projectManager: {
         type: mongoose.ObjectId,
         ref: 'User',
     },
-    _proyectOwnerId: {
+    _productOwner: {
         type: mongoose.ObjectId,
         ref: 'User',
     },
@@ -24,16 +24,17 @@ const schema = mongoose.Schema({
 });
 
 class Project {
-    constructor(projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam, dashboard) {
+    constructor(projectName, applicationDate, startDate, description, projectManager, productOwner, developmentTeam, dashboard) {
         this._projectName = projectName;
         this._applicationDate = applicationDate;
         this._startDate = startDate;
         this._description = description;
-        this._proyectManager = proyectManager;
-        this._proyectOwner = proyectOwner;
+        this._projectManager = projectManager;
+        this._productOwner = productOwner;
         this._developmentTeam = developmentTeam;
         this._dashboard = dashboard;
     }
+
     get projectName() {
         return this._projectName;
     }
@@ -62,18 +63,19 @@ class Project {
         this._description = description;
     }
 
-    get proyectManager() {
-        return this._proyectManager;
+    get projectManager() {
+        return this._projectManager;
     }
-    set proyectManager(proyectManager) {
-        this._proyectManager = proyectManager;
+    set projectManager(projectManager) {
+        console.log("PROJECT MANAGER", projectManager);
+        this._projectManager = projectManager;
     }
 
-    get proyectOwner() {
-        return this._proyectOwner;
+    get productOwner() {
+        return this._productOwner;
     }
-    set proyectOwner(proyectOwner) {
-        this._proyectOwner = proyectOwner;
+    set productOwner(productOwner) {
+        this._productOwner = productOwner;
     }
 
     get developmentTeam() {

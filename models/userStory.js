@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Priorities = require('./enums/priorities.enum');
+const PrioritiesEnum = require('./enums/priorities.enum');
 
 const schema = new mongoose.Schema({
     _title: String,
@@ -8,8 +8,8 @@ const schema = new mongoose.Schema({
     _narrativeLike: String,
     _priority: {
         type: String,
-        enum: Object.keys(Priorities),
-        default: Priorities.MUST,
+        enum: Object.keys(PrioritiesEnum),
+        default: PrioritiesEnum.MUST,
     },
     _size: Number,
     _criteriaContext: String,

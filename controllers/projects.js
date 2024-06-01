@@ -1,11 +1,11 @@
 const express = require('express');
 const Project = require('../models/project');
-const mongoose = require('mongoose');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
-    const { projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam } = req.body;
-   
-    const project = new Project({ projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam});
+    const { projectName, applicationDate, startDate, description, projectManager, productOwner, developmentTeam, dashboard } = req.body;
+
+    const project = new Project({ projectName, applicationDate, startDate, description, projectManager, productOwner, developmentTeam, dashboard });
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
@@ -43,7 +43,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Project.find().then((obj) => {
+    Project.find().populate("_projectManager").populate("_developmentTeam").populate("_productOwner").populate("_dashboard").then((obj) => {
         res.status(200).json({
             msg: 'Project list',
             obj: obj,
@@ -70,7 +70,7 @@ async function index(req, res, next) {
         return;
     }
 
-    Project.findOne({ _id: id }).then((obj) => {
+    Project.findOne({ _id: id }).populate("_projectManager").populate("_developmentTeam").populate("_productOwner").populate("_dashboard").then((obj) => {
         res.status(200).json({
             msg: `Project ${id}`,
             obj: obj,
@@ -85,14 +85,15 @@ async function index(req, res, next) {
 
 async function replace(req, res, next) {
     const { id } = req.params;
-    const { projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam } = {
+    const { projectName, applicationDate, startDate, description, projectManager, productOwner, developmentTeam, dashboard} = {
         projectName: req.body.projectName || "",
         applicationDate: req.body.applicationDate || "",
         startDate: req.body.startDate || "",
         description: req.body.description || "",
-        proyectManager: req.body.proyectManager || "",
-        proyectOwner: req.body.proyectOwner || "",
+        projectManager: req.body.projectManager || "",
+        productOwner: req.body.productOwner || "",
         developmentTeam: req.body.developmentTeam || "",
+        dashboard: req.body.dashboard || "",
     }
 
     const project = new Object({
@@ -100,9 +101,10 @@ async function replace(req, res, next) {
         _applicationDate: applicationDate,
         _startDate: startDate,
         _description: description,
-        _proyectManager: proyectManager,
-        _proyectOwner: proyectOwner,
+        _projectManager: projectManager,
+        _productOwner: productOwner,
         _developmentTeam: developmentTeam,
+        _dashboard: dashboard,
     });
 
     const currentUser = req.auth.data.user;
@@ -131,14 +133,15 @@ async function replace(req, res, next) {
 
 async function update(req, res, next) {
     const { id } = req.params;
-    const { projectName, applicationDate, startDate, description, proyectManager, proyectOwner, developmentTeam } = {
+    const { projectName, applicationDate, startDate, description, projectManager, productOwner, developmentTeam, dashboard} = {
         projectName: req.body.projectName || undefined,
         applicationDate: req.body.applicationDate || undefined,
         startDate: req.body.startDate || undefined,
         description: req.body.description || undefined,
-        proyectManager: req.body.proyectManager || undefined,
-        proyectOwner: req.body.proyectOwner || undefined,
+        projectManager: req.body.projectManager || undefined,
+        productOwner: req.body.productOwner || undefined,
         developmentTeam: req.body.developmentTeam || undefined,
+        dashboard: req.body.dashboard || undefined,
     }
 
     const project = new Object({
@@ -146,14 +149,15 @@ async function update(req, res, next) {
         _applicationDate: applicationDate,
         _startDate: startDate,
         _description: description,
-        _proyectManager: proyectManager,
-        _proyectOwner: proyectOwner,
+        _projectManager: projectManager,
+        _productOwner: productOwner,
         _developmentTeam: developmentTeam,
+        _dashboard: dashboard,
     });
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
-    
+
     if (ability.cannot('UPDATE', 'Project')) {
         res.status(403).json({
             msg: "Project couldn't be updated",

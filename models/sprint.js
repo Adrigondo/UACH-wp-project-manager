@@ -1,30 +1,30 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-    _backlog: [{
+    _backlog: {
         type: mongoose.ObjectId,
         ref: 'Column',
-    }],
-    _doing: [{
+    },
+    _doing: {
         type: mongoose.ObjectId,
         ref: 'Column',
-    }],
-    _done: [{
+    },
+    _done: {
         type: mongoose.ObjectId,
         ref: 'Column',
-    }],
-    _testing:[{
+    },
+    _testing: {
         type: mongoose.ObjectId,
         ref: 'Column',
-    }],
-    _release: [{
+    },
+    _release: {
         type: mongoose.ObjectId,
         ref: 'Column',
-    }],
+    },
 });
 
 class Sprint {
-    constructor(backlog, doing, done, testing, release ) {
+    constructor(backlog, doing, done, testing, release) {
         this._backlog = backlog;
         this._doing = doing;
         this._done = done;

@@ -3,9 +3,9 @@ const Dashboard = require('../models/dashboard');
 const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
-    const { project, startDate, productBacklogColumn, releasesBacklog } = req.body;
+    const { startDate, productBacklogColumn, releasesBacklogs } = req.body;
 
-    const dashboard = new Dashboard({ project, startDate, productBacklogColumn, releasesBacklog, permissions });
+    const dashboard = new Dashboard({ startDate, productBacklogColumn, releasesBacklogs });
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
@@ -43,7 +43,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Dashboard.find().then((obj) => {
+    Dashboard.find().populate("_productBacklogColumn").populate("_releasesBacklogs").then((obj) => {
         res.status(200).json({
             msg: 'Dashboard list',
             obj: obj,
@@ -85,17 +85,15 @@ async function index(req, res, next) {
 
 async function replace(req, res, next) {
     const { id } = req.params;
-    const { project, startDate, productBacklogColumn, releasesBacklog } = {
-        project: req.body.project || "",
+    const { startDate, productBacklogColumn, releasesBacklogs } = {
         startDate: req.body.startDate || "",
-        productBacklogColumn: req.body.releasesBacklog || "",
+        productBacklogColumn: req.body.releasesBacklogs || "",
     }
 
     const dashboard = new Object({
-        _project: project,
         _startDate: startDate,
         _productBacklogColumn: productBacklogColumn,
-        _releasesBacklog: releasesBacklog,
+        _releasesBacklogs: releasesBacklogs,
     });
 
     const currentUser = req.auth.data.user;
@@ -124,18 +122,16 @@ async function replace(req, res, next) {
 
 async function update(req, res, next) {
     const { id } = req.params;
-    const { project, startDate, productBacklogColumn, releasesBacklog } = {
-        project: req.body.project || undefined,
+    const { startDate, productBacklogColumn, releasesBacklogs } = {
         startDate: req.body.startDate || undefined,
         productBacklogColumn: req.body.productBacklogColumn || undefined,
-        releasesBacklog: req.body.releasesBacklog || undefined,
+        releasesBacklogs: req.body.releasesBacklogs || undefined,
     }
 
     const dashboard = new Object({
-        _project: project,
         _startDate: startDate,
         _productBacklogColumn: productBacklogColumn,
-        _releasesBacklog: releasesBacklog,
+        _releasesBacklogs: releasesBacklogs,
     });
 
     const currentUser = req.auth.data.user;

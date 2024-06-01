@@ -46,7 +46,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Column.find().then((obj) => {
+    Column.find().populate("_userStories").then((obj) => {
         res.status(200).json({
             msg: 'Column list',
             obj: obj,
@@ -75,7 +75,7 @@ async function index(req, res, next) {
         return;
     }
 
-    Column.findOne({ _id: id }).then((obj) => {
+    Column.findOne({ _id: id }).populate("_userStories").then((obj) => {
         res.status(200).json({
             msg: `Column ${id}`,
             obj: obj,
