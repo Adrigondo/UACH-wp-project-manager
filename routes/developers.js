@@ -1,6 +1,7 @@
+const express = require('express');
+const router = express.Router();
 const controller = require('../controllers/developers')
 
-module.exports = (app, router) => {
     router.post('/', controller.create);
 
     router.get('/', controller.list);
@@ -12,4 +13,5 @@ module.exports = (app, router) => {
     router.patch('/:id', controller.update);
 
     router.delete('/:id', controller.destroy);
-};
+
+module.exports = router;

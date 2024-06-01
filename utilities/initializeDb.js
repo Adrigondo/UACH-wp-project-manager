@@ -110,7 +110,7 @@ function createAdminRole() {
         } else {
             const createPermission = await getAdminPermissionByEnum(PermissionsEnum.CREATE);
             const postPermission = await getAdminPermissionByEnum(HttpPermissionsEnum.POST);
-            console.log(createPermission, postPermission)
+            
             const role = new Role({
                 description: "ADMIN",
                 status: true,
@@ -146,7 +146,7 @@ function createAdminUser() {
         const email = await input("email: ");
         const password = await input("password: ");
         const passwordHash = await bcrypt.hash(password, salt);
-        console.log(username)
+        
         const user = new User({
             username,
             email,

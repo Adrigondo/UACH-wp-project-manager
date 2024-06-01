@@ -4,36 +4,25 @@ const router = express.Router();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const indexRouter = require('./routes/index');
-const authRouter = require('./routes/auth');
-const usersRouter = require('./routes/users');
-const developersRouter = require('./routes/developers');
-const projectsRouter = require('./routes/projects');
-const dashboardsRouter = require('./routes/dashboards');
-const releaseBacklogsRouter = require('./routes/release-backlogs');
-const sprintsRouter = require('./routes/sprints');
-const columnsRouter = require('./routes/columns');
-const userStoriesRouter = require('./routes/user-stories');
-const userSocialNetworksRouter = require('./routes/user-social-networks');
-const skillsRouter = require('./routes/skills');
 const dbConnection = require('./dbConnection');
 const { initializeAdminIfNeeded } = require("./utilities/initializeDb");
 const { expressjwt } = require('express-jwt');
 
-const Routers = [
-  authRouter,
-  indexRouter,
-  usersRouter,
-  developersRouter,
-  projectsRouter,
-  dashboardsRouter,
-  releaseBacklogsRouter,
-  sprintsRouter,
-  columnsRouter,
-  userStoriesRouter,
-  userSocialNetworksRouter,
-  skillsRouter,
-]
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const usersRouter = require('./routes/users');
+const rolesRouter = require('./routes/roles');
+const permissionsRouter = require('./routes/permissions');
+const developersRouter = require('./routes/developers');
+const projectsRouter = require('./routes/projects');
+const dashboardsRouter = require('./routes/dashboards');
+const releaseBacklogsRouter = require('./routes/releaseBacklogs');
+const sprintsRouter = require('./routes/sprints');
+const columnsRouter = require('./routes/columns');
+const userStoriesRouter = require('./routes/user-stories');
+const userSocialNetworksRouter = require('./routes/userSocialNetworks');
+const developerSkillsRouter = require('./routes/developerSkills');
+
 
 dbConnection.run().then(async () => {
   console.log("Connection to database sucessful!");
@@ -67,26 +56,20 @@ app.use(expressjwt({ secret: app.get('jwt.secret'), algorithms: ['HS256'] }).unl
   path: ['/login'],
 }));
 
-
-Routers.forEach((createRouter) => {
-  if (typeof createRouter === 'function') {
-    createRouter(app, router);
-  }
-});
-app.use('/', router);
-
-// app.use('/', indexRouter);
-// app.use('/login', authRouter);
-// app.use('/users', usersRouter);
-// app.use('/developers', developersRouter);
-// app.use('/projects', projectsRouter);
-// app.use('/dashboards', dashboardsRouter);
-// app.use('/release-backlogs', releaseBacklogsRouter);
-// app.use('/sprints', sprintsRouter);
-// app.use('/columns', columnsRouter);
-// app.use('/user-stories', userStoriesRouter);
-// app.use('/user-social-networks', userSocialNetworksRouter);
-// app.use('/skills', skillsRouter);
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/users', usersRouter);
+app.use('/roles', rolesRouter);
+app.use('/permissions', permissionsRouter);
+app.use('/developers', developersRouter);
+app.use('/projects', projectsRouter);
+app.use('/dashboards', dashboardsRouter);
+app.use('/release-backlogs', releaseBacklogsRouter);
+app.use('/sprints', sprintsRouter);
+app.use('/columns', columnsRouter);
+app.use('/user-stories', userStoriesRouter);
+app.use('/user-social-networks', userSocialNetworksRouter);
+app.use('/skills', developerSkillsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
