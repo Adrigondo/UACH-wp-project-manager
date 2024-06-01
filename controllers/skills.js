@@ -10,7 +10,7 @@ async function create(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('CREATE', 'Skill')) {
+    if (ability.cannot('CREATE', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be created",
             obj: {},
@@ -35,7 +35,7 @@ async function list(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('LIST', 'Skill')) {
+    if (ability.cannot('LIST', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be listed",
             obj: {},
@@ -62,7 +62,7 @@ async function index(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('READ', 'Skill')) {
+    if (ability.cannot('READ', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be readed",
             obj: {},
@@ -98,7 +98,7 @@ async function replace(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('REPLACE', 'Slikk')) {
+    if (ability.cannot('REPLACE', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be replaced",
             obj: {},
@@ -134,7 +134,7 @@ async function update(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
     
-    if (ability.cannot('UPDATE', 'Skill')) {
+    if (ability.cannot('UPDATE', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be updated",
             obj: {},
@@ -160,7 +160,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'Skill')) {
+    if (ability.cannot('DELETE', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be deleted",
             obj: {},

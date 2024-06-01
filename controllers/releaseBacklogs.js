@@ -10,7 +10,7 @@ async function create(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('CREATE', 'Release backlog')) {
+    if (ability.cannot('CREATE', 'ReleaseBacklog')) {
         res.status(403).json({
             msg: "Release backlog couldn't be created",
             obj: {},
@@ -35,7 +35,7 @@ async function list(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('LIST', 'Release backlog')) {
+    if (ability.cannot('LIST', 'ReleaseBacklog')) {
         res.status(403).json({
             msg: "Release backlog couldn't be listed",
             obj: {},
@@ -62,7 +62,7 @@ async function index(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('READ', 'Release backlog')) {
+    if (ability.cannot('READ', 'ReleaseBacklog')) {
         res.status(403).json({
             msg: "Release backlog couldn't be readed",
             obj: {},
@@ -100,7 +100,7 @@ async function replace(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('REPLACE', 'Release backlog')) {
+    if (ability.cannot('REPLACE', 'ReleaseBacklog')) {
         res.status(403).json({
             msg: "Release backlog couldn't be replaced",
             obj: {},
@@ -138,7 +138,7 @@ async function update(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
     
-    if (ability.cannot('UPDATE', 'Release backlog')) {
+    if (ability.cannot('UPDATE', 'ReleaseBacklog')) {
         res.status(403).json({
             msg: "Release backlog couldn't be updated",
             obj: {},
@@ -164,7 +164,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'Release backlog')) {
+    if (ability.cannot('DELETE', 'ReleaseBacklog')) {
         res.status(403).json({
             msg: "Release backlog couldn't be deleted",
             obj: {},

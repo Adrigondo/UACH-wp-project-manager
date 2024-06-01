@@ -10,7 +10,7 @@ async function create(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('CREATE', 'User social network')) {
+    if (ability.cannot('CREATE', 'UserSocialNetwork')) {
         res.status(403).json({
             msg: "User social network couldn't be created",
             obj: {},
@@ -35,7 +35,7 @@ async function list(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('LIST', 'User social network')) {
+    if (ability.cannot('LIST', 'UserSocialNetwork')) {
         res.status(403).json({
             msg: "User social network couldn't be listed",
             obj: {},
@@ -62,7 +62,7 @@ async function index(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('READ', 'User social network')) {
+    if (ability.cannot('READ', 'UserSocialNetwork')) {
         res.status(403).json({
             msg: "User social network couldn't be readed",
             obj: {},
@@ -100,7 +100,7 @@ async function replace(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('REPLACE', 'User social network')) {
+    if (ability.cannot('REPLACE', 'UserSocialNetwork')) {
         res.status(403).json({
             msg: "User social network couldn't be replaced",
             obj: {},
@@ -138,7 +138,7 @@ async function update(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
     
-    if (ability.cannot('UPDATE', 'User social network')) {
+    if (ability.cannot('UPDATE', 'UserSocialNetwork')) {
         res.status(403).json({
             msg: "User social network couldn't be updated",
             obj: {},
@@ -164,7 +164,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'User social network')) {
+    if (ability.cannot('DELETE', 'UserSocialNetwork')) {
         res.status(403).json({
             msg: "User social network couldn't be deleted",
             obj: {},

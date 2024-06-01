@@ -10,7 +10,7 @@ async function create(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('CREATE', 'User story')) {
+    if (ability.cannot('CREATE', 'UserStory')) {
         res.status(403).json({
             msg: "User story couldn't be created",
             obj: {},
@@ -35,7 +35,7 @@ async function list(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('LIST', 'User story')) {
+    if (ability.cannot('LIST', 'UserStory')) {
         res.status(403).json({
             msg: "User story couldn't be listed",
             obj: {},
@@ -62,7 +62,7 @@ async function index(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('READ', 'User story')) {
+    if (ability.cannot('READ', 'UserStory')) {
         res.status(403).json({
             msg: "User story couldn't be readed",
             obj: {},
