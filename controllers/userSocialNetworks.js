@@ -1,10 +1,10 @@
 const express = require('express');
 const UserSocialNetwork = require('../models/users/userSocialNetwork');
-const mongoose = require('mongoose');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { username, apiKey, socialNetwork } = req.body;
-
+    console.log(req.body);
     const userSocialNetwork = new UserSocialNetwork({ username, apiKey, socialNetwork });
 
     const currentUser = req.auth.data.user;

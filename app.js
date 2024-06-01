@@ -19,7 +19,7 @@ const dashboardsRouter = require('./routes/dashboards');
 const releaseBacklogsRouter = require('./routes/releaseBacklogs');
 const sprintsRouter = require('./routes/sprints');
 const columnsRouter = require('./routes/columns');
-const userStoriesRouter = require('./routes/user-stories');
+const userStoriesRouter = require('./routes/userStories');
 const userSocialNetworksRouter = require('./routes/userSocialNetworks');
 const developerSkillsRouter = require('./routes/developerSkills');
 
@@ -62,6 +62,7 @@ app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
 app.use('/permissions', permissionsRouter);
 app.use('/developers', developersRouter);
+app.use('/developer-skills', developerSkillsRouter);
 app.use('/projects', projectsRouter);
 app.use('/dashboards', dashboardsRouter);
 app.use('/release-backlogs', releaseBacklogsRouter);
@@ -69,7 +70,6 @@ app.use('/sprints', sprintsRouter);
 app.use('/columns', columnsRouter);
 app.use('/user-stories', userStoriesRouter);
 app.use('/user-social-networks', userSocialNetworksRouter);
-app.use('/skills', developerSkillsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

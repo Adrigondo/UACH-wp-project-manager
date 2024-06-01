@@ -1,6 +1,6 @@
 const express = require('express');
-const Role = require('../models/sprint');
-const mongoose = require('mongoose');
+const Sprint = require('../models/sprint');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { backlog, doing, done, testing, release } = req.body;

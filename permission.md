@@ -87,3 +87,19 @@ The admin permissions uses `all` permissions.
 ```js
 "665a89f5bea06aff76d0c83d"
 ```
+
+## Developer
+### Permissions
+```js
+665aaedb17abf6e8b6befad0
+665aaec317abf6e8b6befacc
+665aaeb717abf6e8b6befac8
+665aaeab17abf6e8b6befac4
+665aaea817abf6e8b6befac0
+665aae9c17abf6e8b6befabc
+665aae9917abf6e8b6befab8
+665aae8b17abf6e8b6befab4
+665aae7017abf6e8b6befab0
+665aae0617abf6e8b6befaa8
+665aaf6017abf6e8b6befad7
+```

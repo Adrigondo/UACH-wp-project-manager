@@ -1,8 +1,7 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const { defineAbilityFor } = require('../utilities/permissions');
 const Developer = require('../models/users/developer');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const {
