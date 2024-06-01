@@ -42,7 +42,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Permission.find().populate('_roles').then((obj) => {
+    Permission.find().then((obj) => {
         res.status(200).json({
             msg: 'Permissions list',
             obj: obj,
@@ -68,7 +68,7 @@ async function index(req, res, next) {
         return;
     }
 
-    Permission.findOne({ _id: id }).populate('_roles').then((obj) => {
+    Permission.findOne({ _id: id }).then((obj) => {
         res.status(200).json({
             msg: `Permission ${id}`,
             obj: obj,

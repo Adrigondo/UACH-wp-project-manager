@@ -6,10 +6,10 @@ const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { username, email, password, roles: rolesArray, socialNetworks: socialNetworksArray } = req.body;
-    const roles = map((id) => {
+    const roles = rolesArray.map((id) => {
         return mongoose.Types.ObjectId(id);
     });
-    const socialNetworks = map((id) => {
+    const socialNetworks = socialNetworksArray.map((id) => {
         return mongoose.Types.ObjectId(id);
     });
     const salt = await bcrypt.genSalt(10);
@@ -95,26 +95,28 @@ async function index(req, res, next) {
 
 async function replace(req, res, next) {
     const { id } = req.params;
-    const { username, email, password, roles } = {
-        name: req.body.name || "",
-        lastName: req.body.lastName || "",
+    const { username, email, password, roles, socialNetworks } = {
+        username: req.body.username || "",
         email: req.body.email || "",
         password: req.body.password || "",
-        roles: JSON.parse(req.body.roles).map((id) => {
+        roles: req.body.roles ? req.body.roles.map((id) => {
             return new mongoose.Types.ObjectId(id);
-        }) || [],
+        }) : [],
+        socialNetworks: req.body.socialNetworks ? req.body.socialNetworks.map((id) => {
+            return new mongoose.Types.ObjectId(id);
+        }) : [],
     }
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
     const user = new Object({
-        _name: name,
-        _lastName: lastName,
+        _username: username,
         _email: email,
         _password: passwordHash,
         _salt: salt,
         _roles: roles,
+        _socialNetworks: socialNetworks,
     });
 
     const currentUser = req.auth.data.user;
@@ -143,26 +145,28 @@ async function replace(req, res, next) {
 
 async function update(req, res, next) {
     const { id } = req.params;
-    const { username, email, password, roles } = {
-        name: req.body.name || undefined,
-        lastName: req.body.lastName || undefined,
+    const { username, email, password, roles, socialNetworks } = {
+        username: req.body.username || undefined,
         email: req.body.email || undefined,
         password: req.body.password || undefined,
-        roles: JSON.parse(req.body.roles).map((id) => {
+        roles: req.body.roles ? req.body.roles.map((id) => {
             return new mongoose.Types.ObjectId(id);
-        }) || undefined,
+        }) : undefined,
+        socialNetworks: req.body.socialNetworks ? req.body.socialNetworks.map((id) => {
+            return new mongoose.Types.ObjectId(id);
+        }) : undefined,
     }
 
     const salt = password ? await bcrypt.genSalt(10) : undefined;
     const passwordHash = password ? await bcrypt.hash(password, salt) : undefined;
 
     const user = new Object({
-        _name: name,
-        _lastName: lastName,
+        _username: username,
         _email: email,
         _password: passwordHash,
         _salt: salt,
         _roles: roles,
+        _socialNetworks: socialNetworks,
     });
 
     const currentUser = req.auth.data.user;

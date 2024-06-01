@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
-    const { description, status, permissions } = req.body;
-    const permissionsArray = JSON.parse(permissions).map((id) => {
+    const { description, status, permissions: permissionsArray } = req.body;
+    const permissions = permissions ? permissionsArray.map((id) => {
         return new mongoose.Types.ObjectId(id);
-    });
+    }) : [];
     const role = new Role({ description, status, permissions: permissionsArray });
 
     const currentUser = req.auth.data.user;
@@ -91,7 +91,7 @@ async function replace(req, res, next) {
     const { description, status, permissions } = {
         description: req.body.description || "",
         status: req.body.status || "",
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
+        permissions: req.body.permissions ? req.body.permissions.map((id) => {
             return new mongoose.Types.ObjectId(id);
         }) : [],
     }
@@ -130,7 +130,7 @@ async function update(req, res, next) {
     const { description, status, permissions } = {
         description: req.body.description || undefined,
         status: req.body.status || undefined,
-        permissions: req.body.permissions ? JSON.parse(req.body.permissions).map((id) => {
+        permissions: req.body.permissions ? req.body.permissions.map((id) => {
             return new mongoose.Types.ObjectId(id);
         }) : undefined,
     }
@@ -142,7 +142,7 @@ async function update(req, res, next) {
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
-    
+
     if (ability.cannot('UPDATE', 'Role')) {
         res.status(403).json({
             msg: "Role couldn't be updated",

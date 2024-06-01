@@ -30,7 +30,7 @@ function login(req, res, next) {
                     data: {
                         user: user,
                     },
-                    exp: Math.floor(Date.now() / 1000) + 86400, // 1 day
+                    exp: Math.floor(Date.now() / 1000) + 1000*60*60*24, // 1 day
                 }, req.app.get('jwt.secret')),
             });
         } else {
