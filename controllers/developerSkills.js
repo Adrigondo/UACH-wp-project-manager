@@ -1,11 +1,11 @@
 const express = require('express');
-const Skill = require('../models/users/developerSkill');
-const mongoose = require('mongoose');
+const DeveloperSkill = require('../models/users/developerSkill');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { description, rank } = req.body;
   
-    const skill = new Skill({ description, rank });
+    const developerSkill = new DeveloperSkill({ description, rank });
 
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
@@ -18,7 +18,7 @@ async function create(req, res, next) {
         return;
     }
 
-    skill.save().then((obj) => {
+    developerSkill.save().then((obj) => {
         res.status(200).json({
             msg: 'Skill correctly created',
             obj: obj,
@@ -43,7 +43,7 @@ async function list(req, res, next) {
         return;
     }
 
-    Skill.find().then((obj) => {
+    DeveloperSkill.find().then((obj) => {
         res.status(200).json({
             msg: 'Skill list',
             obj: obj,
@@ -70,7 +70,7 @@ async function index(req, res, next) {
         return;
     }
 
-    Skill.findOne({ _id: id }).then((obj) => {
+    DeveloperSkill.findOne({ _id: id }).then((obj) => {
         res.status(200).json({
             msg: `Skill ${id}`,
             obj: obj,
@@ -106,7 +106,7 @@ async function replace(req, res, next) {
         return;
     }
 
-    Skill.findOneAndUpdate({ _id: id }, skill, { new: true }).then((obj) => {
+    DeveloperSkill.findOneAndUpdate({ _id: id }, skill, { new: true }).then((obj) => {
         res.status(200).json({
             msg: `Skill ${obj.id} updated`,
             obj: obj,
@@ -142,7 +142,7 @@ async function update(req, res, next) {
         return;
     }
 
-    Skill.findOneAndUpdate({ _id: id }, skill, { new: true }).then((obj) => {
+    DeveloperSkill.findOneAndUpdate({ _id: id }, skill, { new: true }).then((obj) => {
         res.status(200).json({
             msg: `Skill ${obj.id} updated`,
             obj: obj,
@@ -168,7 +168,7 @@ async function destroy(req, res, next) {
         return;
     }
 
-    Skill.findByIdAndDelete({ _id: id }).then((obj) => {
+    DeveloperSkill.findByIdAndDelete({ _id: id }).then((obj) => {
         res.status(200).json({
             msg: `Skill ${id} deleted`,
             obj: obj,

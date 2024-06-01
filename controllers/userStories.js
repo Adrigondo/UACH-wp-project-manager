@@ -1,6 +1,6 @@
 const express = require('express');
 const UserStory = require('../models/userStory');
-const mongoose = require('mongoose');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const {title, narrativeHow, narrativeWant, narrativeLike, priority, size, criteriaContext, criteriaWhen, criteriaThen, approved } = req.body;

@@ -1,6 +1,6 @@
 const express = require('express');
 const Dashboard = require('../models/dashboard');
-const mongoose = require('mongoose');
+const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { project, startDate, productBacklogColumn, releasesBacklog } = req.body;

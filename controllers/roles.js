@@ -5,7 +5,7 @@ const { defineAbilityFor } = require('../utilities/permissions');
 
 async function create(req, res, next) {
     const { description, status, permissions: permissionsArray } = req.body;
-    const permissions = permissions ? permissionsArray.map((id) => {
+    const permissions = permissionsArray ? permissionsArray.map((id) => {
         return new mongoose.Types.ObjectId(id);
     }) : [];
     const role = new Role({ description, status, permissions: permissionsArray });
