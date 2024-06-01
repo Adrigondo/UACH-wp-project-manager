@@ -9,7 +9,7 @@ const defineAbilityFor = async (user) => {
             cannot('CREATE', 'all');
             cannot('READ', 'all');
             cannot('UPDATE', 'all');
-            cannot('DELETE', 'all');
+            cannot('REMOVE', 'all');
             cannot('REPLACE', 'all');
             cannot('LIST', 'all');
             // can('LIST', 'Permission');

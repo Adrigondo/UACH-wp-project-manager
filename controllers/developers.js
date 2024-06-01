@@ -10,7 +10,7 @@ async function create(req, res, next) {
     const skills = skillsArray ? skillsArray.map((id) => {
         return new mongoose.Types.ObjectId(id);
     }) : [];
-
+    
     const developer = new Developer({ name, lastName, birth, curp, rfc, address, skills, userId });
 
     const currentUser = req.auth.data.user;
@@ -199,7 +199,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'Developer')) {
+    if (ability.cannot('REMOVE', 'Developer')) {
         res.status(403).json({
             msg: "Developer couldn't be deleted",
             obj: {},

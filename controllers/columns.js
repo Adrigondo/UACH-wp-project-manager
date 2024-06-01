@@ -163,7 +163,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'Column')) {
+    if (ability.cannot('REMOVE', 'Column')) {
         res.status(403).json({
             msg: "Column couldn't be deleted",
             obj: {},

@@ -160,7 +160,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'DeveloperSkill')) {
+    if (ability.cannot('REMOVE', 'DeveloperSkill')) {
         res.status(403).json({
             msg: "Skill couldn't be deleted",
             obj: {},

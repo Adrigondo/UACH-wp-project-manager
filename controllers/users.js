@@ -200,7 +200,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'User')) {
+    if (ability.cannot('REMOVE', 'User')) {
         res.status(403).json({
             msg: "User couldn't be deleted",
             obj: {},

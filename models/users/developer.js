@@ -80,10 +80,10 @@ class Developer {
     }
 
     get userId() {
-        return this.userId;
+        return this._userId;
     }
     set userId(userId) {
-        this.userId = userId;
+        this._userId = userId;
     }
 }
 

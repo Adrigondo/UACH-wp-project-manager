@@ -172,7 +172,7 @@ async function destroy(req, res, next) {
     const currentUser = req.auth.data.user;
     const ability = await defineAbilityFor(currentUser);
 
-    if (ability.cannot('DELETE', 'Sprint')) {
+    if (ability.cannot('REMOVE', 'Sprint')) {
         res.status(403).json({
             msg: "Sprint couldn't be deleted",
             obj: {},
