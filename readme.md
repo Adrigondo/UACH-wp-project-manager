@@ -49,6 +49,8 @@ These are the credentials for an admin account that you can use to test the apli
 - **Email:** admin.
 - **Password:** admin123
 
+The url of the API is [https://wpprojectmanager-e8dqs6f1.b4a.run/](https://wpprojectmanager-e8dqs6f1.b4a.run/)
+
 ## Instructions to initialize the project
 These where the commands executed to initialize the express aplication project:
 ```
