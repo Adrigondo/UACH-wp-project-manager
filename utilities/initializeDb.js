@@ -6,14 +6,34 @@ const Role = require('../models/users/role');
 const Permission = require('../models/users/permission');
 const { PermissionsEnum, HttpPermissionsEnum } = require('../models/enums/permissions.enum');
 
+const getRoleByEnum = async (role) => {
+    return await Role.findOne({
+        _description: role,
+    }).populate("_permissions");
+}
+
+const getAdminPermissionByEnum = async (permission) => {
+    return await Permission.findOne({
+        _description: "all",
+        _type: permission
+    });
+}
+
 async function createAdminPermissions(permissionsEnum) {
     return new Promise(async (resolve, reject) => {
-        const existentPermissions=await Permission
         const permissions = Object.keys(permissionsEnum).map((permission) => {
-            return { description: "all", type: permission }
+            return { _description: "all", _type: permission }
+        });
+        const permissionsToCreate = (await Promise.all(
+            permissions.map(async (permission) => {
+                const permissionExistent = await Permission.findOne(permission);
+                return permissionExistent || permission;
+            })
+        )).filter((permission) => {
+            return !permission.id
         });
 
-        await Permission.insertMany(permissions).then((obj) => {
+        await Permission.insertMany(permissionsToCreate).then((obj) => {
             console.log("Admin permissions created.");
             resolve();
         }).catch((exc) => {
@@ -25,25 +45,69 @@ async function createAdminPermissions(permissionsEnum) {
     });
 }
 
+async function updateRoleWithPermissions(role) {
+    const isCreatePermissionInRole = role.permissions.find(
+        (rolePermission) => {
+            return rolePermission._description === "all" && rolePermission._type === PermissionsEnum.CREATE;
+        }
+    );
+    if (!isCreatePermissionInRole) {
+        const createPermission = await getAdminPermissionByEnum(PermissionsEnum.CREATE);
+        role._permissions = [
+            ...role._permissions,
+            createPermission._id,
+        ];
+    }
+
+    const isPostPermissionInRole = role.permissions.find(
+        (rolePermission) => {
+            return rolePermission._description === "all" && rolePermission._type === HttpPermissionsEnum.POST;
+        }
+    );
+    if (!isPostPermissionInRole) {
+        const postPermission = await getAdminPermissionByEnum(HttpPermissionsEnum.POST);
+        role._permissions = [
+            ...role._permissions,
+            postPermission._id,
+        ];
+    }
+
+    return await role.save().then((obj) => {
+        console.log("Role 'ADMIN' updated with permissions");
+        resolve();
+    }).catch((exc) => {
+        reject({
+            msg: "Role 'ADMIN' couldn't be updated with permissions",
+            exc
+        });
+    });
+}
+
 async function createAdminRole() {
     return new Promise(async (resolve, reject) => {
-        const permissions = await Permission.find({ "description": "all" });
-        const role = new Role({
-            description: "ADMIN",
-            status: true,
-            permissions: permissions.map((permission) => permission._id),
-        });
-
-        role.save().then((obj) => {
-            console.log("Role 'ADMIN' created.");
-            resolve();
-        }).catch((exc) => {
-            reject({
-                msg: "Role 'ADMIN' couldn't be created",
-                exc
+        const roleExistent = await getRoleByEnum(Role.ADMIN);
+        console.log("RoleExistent:", roleExistent);
+        if (roleExistent) {
+            updateRoleWithPermissions(roleExistent)
+        } else {
+            const createPermission = await getAdminPermissionByEnum(PermissionsEnum.CREATE);
+            const postPermission = await getAdminPermissionByEnum(HttpPermissionsEnum.POST);
+            console.log(createPermission, postPermission)
+            const role = new Role({
+                description: "ADMIN",
+                status: true,
+                permissions: [createPermission.id, postPermission.id],
             });
-        });
-
+            role.save().then((obj) => {
+                console.log("Role 'ADMIN' created with permissions");
+                resolve();
+            }).catch((exc) => {
+                reject({
+                    msg: "Role 'ADMIN' couldn't be created with permissions",
+                    exc
+                });
+            });
+        }
     });
 }
 
@@ -58,7 +122,7 @@ function createAdminUser() {
         const password = await input("password: ");
         const passwordHash = await bcrypt.hash(password, salt);
 
-        const roleAdmin = await Role.findOne({ "description": "ADMIN" });
+        const roleAdmin = await Role.findOne({ "_description": "ADMIN" });
         const user = new User({
             username,
             email,
@@ -78,79 +142,27 @@ function createAdminUser() {
     });
 }
 
-const doesPermissionExist = async (permission) => {
-    return new Promise(async (resolve, reject) => {
-        const count = await Permission.find({
-            _description: "all",
-            _type: permission
-        }).countDocuments().catch((exc) => reject({
-            msg: "Couldn't count Permissions",
-            exc
-        }));
-
-        if (count > 0) {
-            resolve(true);
-        } else {
-            resolve(false);
-        }
-    });
-}
-const doesRoleExist = async (role) => {
-    return new Promise(async (resolve, reject) => {
-        const count = await Role.find({
-            _description: role,
-        }).countDocuments().catch((exc) => reject({
-            msg: "Couldn't count Permissions",
-            exc
-        }));
-
-        if (count > 0) {
-            resolve(true);
-        } else {
-            resolve(false);
-        }
-    });
-}
-const doesAdminExist = async () => {
-    return new Promise(async (resolve, reject) => {
-        const count = await User.find().populate("_roles").countDocuments({ "role.description": RolesEnum.ADMIN }).catch((exc) => reject({
-            msg: "Couldn't count Users",
-            exc
-        }));
-        console.log("Admin counter:", count, await User.find().populate("_roles"))
-        if (count <= 0) {
-            resolve(true);
-        } else {
-            resolve(false);
-        }
-    });
-}
 const initializeAdminIfNeeded = async () => {
     return new Promise(async (resolve, reject) => {
         const count = await User.find().populate("_roles").countDocuments({ "role.description": RolesEnum.ADMIN });
         console.log("Admin counter:", count, await User.find().populate("_roles"))
         if (count <= 0) {
-            doesPermissionExist(PermissionsEnum.CREATE).then(async (exists) => {
-                if (!exists)
-                    await createAdminPermissions(PermissionsEnum);
-            }).then(async () => {
-                await doesPermissionExist(HttpPermissionsEnum.POST).then(async (exists) => {
-                    if (!exists)
-                        await createAdminPermissions(HttpPermissionsEnum);
-                });
-            }).then(async () => {
-                await doesRoleExist(RolesEnum.ADMIN).then(async (exists) => {
-                    if (!exists)
-                        await createAdminRole(HttpPermissionsEnum);
-                });
-            }).then(async () => {
-                return await createAdminUser().then(() => {
-                    resolve(true);
-                });
-            }).catch((exc) => {
-                console.error(exc);
-                reject(exc);
-            });
+            await createAdminPermissions(PermissionsEnum).then(
+                async () => await createAdminPermissions(HttpPermissionsEnum)
+            ).then(
+                async () => await createAdminRole()
+            ).then(
+                async () => {
+                    return await createAdminUser().then(() => {
+                        resolve(true);
+                    });
+                }
+            ).catch(
+                (exc) => {
+                    console.error(exc);
+                    reject(exc);
+                }
+            );
         } else {
             resolve(false);
         }
