@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const jwtSecret = "c2c3416e440dc7ad082c788352d983be";
 app.set('jwt.secret', jwtSecret);
 app.use(expressjwt({ secret: app.get('jwt.secret'), algorithms: ['HS256'] }).unless({
-  path: ['/login'],
+  path: ['/auth/login'],
 }));
 
 app.use('/', indexRouter);
